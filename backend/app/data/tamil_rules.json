@@ -1,0 +1,15 @@
+{
+  "phonetic_rules": [
+    {
+      "rule_id": "rule_001",
+      "pattern": "vowel_ending",
+      "description": "Words ending in vowels"
+    }
+  ],
+  "pronunciation_rules": [
+    {
+      "rule_id": "pr_001",
+      "description": "Tamil consonant pronunciation"
+    }
+  ]
+}

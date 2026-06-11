@@ -1,0 +1,17 @@
+{
+  "lessons": [
+    {
+      "lesson_id": "lesson_001",
+      "title": "Tamil Vowels",
+      "description": "Learn Tamil vowels",
+      "words": [
+        {
+          "word_id": "word_001",
+          "tamil_text": "அ",
+          "transliteration": "a",
+          "meaning": "Vowel A"
+        }
+      ]
+    }
+  ]
+}
