@@ -4,10 +4,10 @@ from openai import OpenAI
 
 load_dotenv()
 
-print("KEY FOUND:", bool(os.getenv("BLUESMINDS_API_KEY")))
+print("KEY FOUND:", bool(os.getenv("API_KEY")))
 
 client = OpenAI(
-    api_key=os.getenv("BLUESMINDS_API_KEY"),
+    api_key=os.getenv("API_KEY"),
     base_url="https://api.bluesminds.com/v1"
 )
 
