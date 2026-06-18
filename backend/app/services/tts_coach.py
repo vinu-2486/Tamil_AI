@@ -21,12 +21,17 @@ def _default_output_path() -> Path:
     return Path(tempfile.gettempdir()) / f"coach_{uuid4().hex}.mp3"
 
 
-def generate_coach_audio(tamil_text: str, output_path: str | None = None) -> str:
-    """Generate slow Tamil coach pronunciation audio.
+def generate_coach_audio(
+    tamil_text: str,
+    output_path: str | None = None,
+    slow: bool = True,
+) -> str:
+    """Generate Tamil coach pronunciation audio.
 
     Args:
         tamil_text: Tamil text to synthesize.
         output_path: Optional output MP3 path.
+        slow: Whether gTTS should generate slower practice audio.
 
     Returns:
         Path to the generated MP3 file.
@@ -41,7 +46,7 @@ def generate_coach_audio(tamil_text: str, output_path: str | None = None) -> str
     try:
         from gtts import gTTS
 
-        tts = gTTS(text=tamil_text, lang="ta", slow=True)
+        tts = gTTS(text=tamil_text, lang="ta", slow=slow)
         tts.save(str(path))
         return str(path)
     except Exception as exc:

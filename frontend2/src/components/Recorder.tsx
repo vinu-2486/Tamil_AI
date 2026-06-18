@@ -77,7 +77,8 @@ function resolveAudioUrl(url: string): string {
 
 function playBackendAudio(
   url: string,
-  onStatus: (status: PlaybackStatus) => void
+  onStatus: (status: PlaybackStatus) => void,
+  playbackRate = 1
 ) {
   if (!url.trim()) {
     onStatus({
@@ -88,6 +89,7 @@ function playBackendAudio(
   }
 
   const audio = new Audio(resolveAudioUrl(url));
+  audio.playbackRate = playbackRate;
   onStatus({ message: "Playing audio...", tone: "info" });
   audio.onended = () => {
     onStatus({ message: "Audio playback finished.", tone: "info" });
@@ -274,7 +276,7 @@ export default function Recorder() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Tamil Pronunciation Coach AI</h1>
+      <h1>கற்பது தமிழ், கற்பிப்பது AI</h1>
 
       <div style={{ marginBottom: "20px" }}>
         <label htmlFor="feedback-language">Feedback language</label>
@@ -380,7 +382,7 @@ export default function Recorder() {
             }
             onClick={() => {
               if (feedbackLanguage === "tamil") {
-                playBackendAudio(coachAudioUrl, setPlaybackStatus);
+                playBackendAudio(coachAudioUrl, setPlaybackStatus, 1.08);
                 return;
               }
 

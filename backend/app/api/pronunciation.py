@@ -80,12 +80,13 @@ def _audio_url(filename: str) -> str:
     return f"/audio/{filename}"
 
 
-def _generate_tamil_audio_url(text: str, prefix: str) -> str | None:
+def _generate_tamil_audio_url(text: str, prefix: str, slow: bool = True) -> str | None:
     """Generate Tamil MP3 audio and return its public URL.
 
     Args:
         text: Tamil text to synthesize.
         prefix: Filename prefix.
+        slow: Whether to generate slower practice audio.
 
     Returns:
         Public URL when generation succeeds, otherwise None.
@@ -95,7 +96,7 @@ def _generate_tamil_audio_url(text: str, prefix: str) -> str | None:
     filename = f"{prefix}_{uuid4().hex}.mp3"
     output_path = GENERATED_AUDIO_DIR / filename
     try:
-        generate_coach_audio(text, str(output_path))
+        generate_coach_audio(text, str(output_path), slow=slow)
         return _audio_url(filename)
     except TTSError as exc:
         logger.warning("Unable to generate %s Tamil audio: %s", prefix, exc)
@@ -125,13 +126,14 @@ async def analyze(
             coach_audio_text = str(feedback.get("coach_audio_text") or "")
             correction_audio_text = str(feedback.get("correction_audio_text") or "")
             feedback["coach_audio_url"] = (
-                _generate_tamil_audio_url(coach_audio_text, "coach")
+                _generate_tamil_audio_url(coach_audio_text, "coach", slow=False)
                 if language == "tamil"
                 else None
             )
             feedback["correction_audio_url"] = _generate_tamil_audio_url(
                 correction_audio_text,
                 "correction",
+                slow=True,
             )
         return {"transcript": transcript, "analysis": feedback}
     finally:
