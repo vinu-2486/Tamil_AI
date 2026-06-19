@@ -1,4 +1,4 @@
-# Tamil Pronunciation Coach 🗣️
+# "கற்பது தமிழ் கற்பிப்பது AI"-Tamil Pronunciation Coach
 
 An AI-powered web app that helps users practice and improve their **Tamil pronunciation**. Users record themselves speaking a given phrase, and the system analyzes their speech — comparing it against expected pronunciation, phonemes, and prosody — to give real-time feedback and a score.
 
@@ -6,19 +6,19 @@ Built for "DTEC 2026 Hackathon - Advancing Tamil Digital Learning with AI" 2026.
 
 ---
 
-## ✨ Features
+## Features
 
-- 🎙️ **Voice Recording** — Record your pronunciation attempt directly in the browser
-- 🔊 **Speech-to-Text** — Converts spoken Tamil audio into text for analysis
-- 🧠 **Pronunciation Scoring** — Compares phonemes and acoustic features against reference pronunciation
-- 🎵 **Prosody Analysis** — Evaluates rhythm, stress, and intonation
-- 💡 **Feedback Generation** — Personalized, actionable feedback on what to improve
-- 🗣️ **TTS Coach** — Hear the correct pronunciation as a model to follow
-- 📊 **Score Card UI** — Visual breakdown of performance after each attempt
+-  **Voice Recording** — Record your pronunciation attempt directly in the browser
+-  **Speech-to-Text** — Converts spoken Tamil audio into text for analysis
+-  **Pronunciation Scoring** — Compares phonemes and acoustic features against reference pronunciation
+-  **Prosody Analysis** — Evaluates rhythm, stress, and intonation
+-  **Feedback Generation** — Personalized, actionable feedback on what to improve
+-  **TTS Coach** — Hear the correct pronunciation as a model to follow
+-  **Score Card UI** — Visual breakdown of performance after each attempt
 
 ---
 
-## 🏗️ Tech Stack
+##  Tech Stack
 
 **Frontend**
 - React + TypeScript
@@ -33,7 +33,7 @@ Built for "DTEC 2026 Hackathon - Advancing Tamil Digital Learning with AI" 2026.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 proj_tamil_2.0/
@@ -65,7 +65,7 @@ proj_tamil_2.0/
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 Make sure you have the following installed:
 
@@ -75,7 +75,7 @@ Make sure you have the following installed:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the repository
 
@@ -127,10 +127,10 @@ uvicorn app.main:app --reload
 ```
 
 The backend should now be running at:
-👉 `http://127.0.0.1:8000`
+ `http://127.0.0.1:8000`
 
 You can view the interactive API docs at:
-👉 `http://127.0.0.1:8000/docs`
+ `http://127.0.0.1:8000/docs`
 
 ### 3. Frontend Setup
 
@@ -144,7 +144,7 @@ npm run dev
 ```
 
 The frontend should now be running at:
-👉 `http://localhost:5173`
+ `http://localhost:5173`
 
 ### 4. Using the App
 
@@ -155,7 +155,7 @@ The frontend should now be running at:
 
 ---
 
-## 🧪 Running Tests (Backend)
+##  Running Tests (Backend)
 
 ```bash
 cd backend
@@ -164,7 +164,7 @@ pytest tests/
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 - Support for more Tamil dialects/accents
 - Progress tracking and lesson history per user
@@ -173,7 +173,7 @@ pytest tests/
 
 ---
 
-## 👥 Team
+## Team
 
 - Mouleeshwarran A G — Team lead 
 - Guru Prakash P — Frontend
@@ -181,6 +181,6 @@ pytest tests/
 
 ---
 
-## 📄 License
+## License
 
 This project was built for hackathon purposes. License details TBD.
