@@ -4,6 +4,8 @@ import {
   analyzePronunciation,
   type FeedbackLanguage,
 } from "../services/api";
+import ScoreCard from "./ScoreCard";
+import FeedbackCard from "./FeedbackCard";
 
 type AnalysisResult = {
   score?: number | string;
@@ -62,7 +64,7 @@ function splitSpeechText(text: string): string[] {
 
 function repeatPracticeSentence(text: string): string {
   const sentence = text.trim();
-  return sentence ? [sentence, sentence, sentence].join(". ") : "";
+  return sentence;
 }
 
 const BACKEND_ORIGIN = "http://127.0.0.1:8000";
@@ -174,6 +176,21 @@ function speakText(
   window.speechSynthesis.resume();
 }
 
+const KOLAM_DOTS = [
+  [80, 10], [115, 20], [140, 45], [150, 80], [140, 115], [115, 140],
+  [80, 150], [45, 140], [20, 115], [10, 80], [20, 45], [45, 20],
+];
+
+function KolamDots() {
+  return (
+    <>
+      {KOLAM_DOTS.map(([cx, cy], i) => (
+        <circle key={i} className="dot" cx={cx} cy={cy} r="4" />
+      ))}
+    </>
+  );
+}
+
 export default function Recorder() {
   const [feedbackLanguage, setFeedbackLanguage] =
     useState<FeedbackLanguage>("english");
@@ -274,22 +291,52 @@ export default function Recorder() {
   const coachVoiceLanguage =
     feedbackLanguage === "tamil" ? "ta-IN" : "en-US";
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>கற்பது தமிழ், கற்பிப்பது AI</h1>
+  const handlePlayCoach = () => {
+    if (feedbackLanguage === "tamil") {
+      playBackendAudio(coachAudioUrl, setPlaybackStatus, 1.08);
+      return;
+    }
 
-      <div style={{ marginBottom: "20px" }}>
-        <label htmlFor="feedback-language">Feedback language</label>
+    speakText(coachAudioText, coachVoiceLanguage, voices, setPlaybackStatus);
+  };
+
+  const handlePlayCorrection = () => {
+    playBackendAudio(correctionAudioUrl, setPlaybackStatus);
+  };
+
+  const coachDisabled =
+    feedbackLanguage === "tamil"
+      ? !coachAudioUrl && !coachAudioText
+      : !coachAudioText;
+
+  const correctionDisabled = !correctionAudioUrl && !correctionAudioText;
+
+  return (
+    <div className="page">
+      <div className="kolam-divider">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <span key={i}></span>
+        ))}
+      </div>
+
+      <header>
+        <h1>கற்பது தமிழ், கற்பிப்பது AI</h1>
+        <p className="subtitle">Tamil pronunciation coach</p>
+      </header>
+
+      <div className="lang-toggle">
+        <label htmlFor="feedback-language" style={{ display: "none" }}>
+          Feedback language
+        </label>
         <select
           id="feedback-language"
           value={feedbackLanguage}
           onChange={(event) =>
             setFeedbackLanguage(event.target.value as FeedbackLanguage)
           }
-          style={{ marginLeft: "10px", padding: "8px" }}
         >
-          <option value="english">English</option>
-          <option value="tamil">Tamil</option>
+          <option value="english">Feedback language: English</option>
+          <option value="tamil">Feedback language: தமிழ்</option>
         </select>
       </div>
 
@@ -298,132 +345,78 @@ export default function Recorder() {
         onStop={(blobUrl) => {
           sendAudio(blobUrl);
         }}
-        render={({
-          startRecording,
-          stopRecording,
-          mediaBlobUrl,
-          status,
-        }) => (
-          <div>
-            <p>Status: {status}</p>
+        render={({ startRecording, stopRecording, mediaBlobUrl, status }) => (
+          <div className="card record-card">
+            <div className={`status-row ${status === "recording" ? "active" : ""}`}>
+              <span className="status-dot"></span> Status: {status}
+            </div>
 
-            <button
-              onClick={() => {
-                window.speechSynthesis.cancel();
-                setPlaybackStatus(null);
-                startRecording();
-              }}
-            >
-              Start Recording
-            </button>
+            <div className={`kolam-ring ${status === "recording" ? "recording" : ""}`}>
+              <svg viewBox="0 0 160 160">
+                <KolamDots />
+              </svg>
+              <button
+                className="mic-btn"
+                aria-label="Start recording"
+                onClick={() => {
+                  window.speechSynthesis.cancel();
+                  setPlaybackStatus(null);
+                  startRecording();
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                </svg>
+              </button>
+            </div>
 
-            <button onClick={stopRecording}>
-              Stop Recording
-            </button>
+            <div className="rec-controls">
+              <button className="btn primary" onClick={startRecording}>
+                Start recording
+              </button>
+              <button className="btn outline" onClick={stopRecording}>
+                Stop recording
+              </button>
+            </div>
 
             {mediaBlobUrl && (
-              <div style={{ marginTop: "10px" }}>
-                <audio src={mediaBlobUrl} controls />
-              </div>
+              <audio className="audio-player" src={mediaBlobUrl} controls />
             )}
           </div>
         )}
       />
 
-      {loading && <h3>Analyzing...</h3>}
+      {loading && <p className="loading-text">Analyzing...</p>}
 
       {transcript && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Transcript</h3>
-          <p>{transcript}</p>
+        <div className="card">
+          <p className="label">Transcript</p>
+          <p className="transcript-text">{transcript}</p>
         </div>
       )}
 
-      {score !== null && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Pronunciation Score</h3>
-          <p>{score}/100</p>
+      {(score !== null || feedback || improvements.length > 0) && (
+        <div className="grid-2">
+          <ScoreCard score={score} />
+          <FeedbackCard
+            feedback={feedback}
+            improvements={improvements}
+            onPlayCoach={handlePlayCoach}
+            onPlayCorrection={handlePlayCorrection}
+            coachDisabled={coachDisabled}
+            correctionDisabled={correctionDisabled}
+            playbackStatus={playbackStatus}
+          />
         </div>
       )}
 
-      {feedback && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Feedback</h3>
-          <p>{feedback}</p>
-        </div>
-      )}
-
-      {improvements.length > 0 && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Improvements</h3>
-
-          <ul
-            style={{
-              textAlign: "left",
-              maxWidth: "800px",
-              margin: "0 auto",
-              lineHeight: "1.8",
-            }}
-          >
-            {improvements.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {(coachAudioText || correctionAudioText) && (
-        <div style={{ marginTop: "20px" }}>
-          <button
-            disabled={
-              feedbackLanguage === "tamil"
-                ? !coachAudioUrl && !coachAudioText
-                : !coachAudioText
-            }
-            onClick={() => {
-              if (feedbackLanguage === "tamil") {
-                playBackendAudio(coachAudioUrl, setPlaybackStatus, 1.08);
-                return;
-              }
-
-              speakText(
-                coachAudioText,
-                coachVoiceLanguage,
-                voices,
-                setPlaybackStatus
-              );
-            }}
-          >
-            Play Coach Feedback
-          </button>
-
-          <button
-            disabled={!correctionAudioUrl && !correctionAudioText}
-            onClick={() =>
-              playBackendAudio(correctionAudioUrl, setPlaybackStatus)
-            }
-            style={{ marginLeft: "10px" }}
-          >
-            Play Correct Pronunciation
-          </button>
-
-          {playbackStatus && (
-            <p
-              style={{
-                marginTop: "10px",
-                color:
-                  playbackStatus.tone === "error"
-                    ? "#b91c1c"
-                    : playbackStatus.tone === "warning"
-                      ? "#a16207"
-                      : "inherit",
-              }}
-            >
-              {playbackStatus.message}
-            </p>
-          )}
-        </div>
-      )}
+      <div className="kolam-divider" style={{ marginTop: 32 }}>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <span key={i}></span>
+        ))}
+      </div>
     </div>
   );
 }
